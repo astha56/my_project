@@ -13,6 +13,8 @@ class RegisterView(APIView):
             return Response({'message': 'Registered successfully'}, status=201)
         print("Errors:", serializer.errors)                 # Show validation errors
         return Response(serializer.errors, status=400)
+    
+
 
 class LoginView(APIView):
     def post(self, request):
