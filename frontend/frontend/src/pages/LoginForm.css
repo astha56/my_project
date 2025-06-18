@@ -1,16 +1,20 @@
 body {
+  margin:0;
+  padding:0;
+  font-family: 'Segoe UI', sans-serif;
+}
+.auth-bg {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  margin: 0;
-  background-image: url('/public/bac.jpg');
+  background-image: url('/public/bac.jpg'); /* Adjust the path if needed */
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
   background-color: #fff8e1;
-  font-family: 'Segoe UI', sans-serif;
 }
+
 
 .form-container {
   width: 380px;
