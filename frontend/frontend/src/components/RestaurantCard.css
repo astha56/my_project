@@ -1,0 +1,112 @@
+
+.restaurant-card {
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden; /* Ensure content doesn't spill out */
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: block;
+  flex-shrink: 0; /* Prevents cards from shrinking in a flex container */
+  width: 300px; /* Set a fixed width for the cards, adjust as needed */
+  /* If you want space between cards when they wrap in a grid, you'd add margin-bottom here.
+     For the horizontal scroll, gap in the parent container is better. */
+}
+
+.restaurant-card:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px);
+}
+
+.restaurant-image-container {
+  width: 100%;
+  height: 12rem; /* Fixed height for the image area */
+  position: relative; /* To position the status span inside */
+  overflow: hidden; /* Ensures the image doesn't overflow its container */
+}
+
+.restaurant-image {
+  width: 100%;
+  height: 100%; /* Make the image fill its container */
+  object-fit: cover; /* Crop the image to cover the area without distortion */
+}
+
+.restaurant-status {
+  position: absolute;
+  top: 0.75rem; /* Distance from the top of the image container */
+  right: 0.75rem; /* Distance from the right of the image container */
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px; /* Makes it fully rounded */
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap; /* Prevent text from wrapping */
+}
+
+.status-active {
+  background-color: #dcfce7; /* Light green */
+  color: #166534; /* Dark green */
+}
+
+.status-pending {
+  background-color: #fef9c3; /* Light yellow */
+  color: #854d0e; /* Dark yellow/brown */
+}
+
+.restaurant-info {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  /* Adjust height if needed, but flex-grow on description usually handles it */
+}
+
+.restaurant-name {
+  font-size: 1.125rem; /* 18px */
+  font-weight: 600;
+  color: #1f2937; /* Dark gray */
+  margin-bottom: 0.25rem; /* 4px */
+}
+
+.restaurant-description {
+  font-size: 0.875rem; /* 14px */
+  color: #4b5563; /* Medium gray */
+  margin-bottom: 0.5rem; /* 8px */
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Limit to 2 lines */
+  -webkit-box-orient: vertical;
+  flex-grow: 1; /* Allows description to take available vertical space */
+}
+
+.restaurant-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem; /* 14px */
+  color: #4b5563; /* Medium gray */
+  margin-top: auto; /* Pushes meta to the bottom if info has extra space */
+}
+
+.restaurant-meta .rating {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem; /* 4px space between star and number */
+  color: #ca8a04; /* Orange-yellow for star */
+}
+
+.restaurant-footer {
+  margin-top: 0.5rem; /* 8px space above footer */
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* Align cuisine and view menu vertically */
+  font-size: 0.875rem; /* 14px */
+}
+
+.restaurant-cuisine {
+  color: #6b7280; /* Gray */
+}
+
+.view-menu {
+  font-weight: 500;
+  color: #ea580c; /* Orange */
+  text-decoration: none; /* Ensure no underline on link */
+}
