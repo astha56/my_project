@@ -5,19 +5,16 @@ import './RestaurantCard.css'; // Make sure this file exists
 export function RestaurantCard({ restaurant }) {
   return (
     <Link to={`/restaurant/${restaurant.id}`} className="restaurant-card">
+      
       <div className="restaurant-image-container"> {/* Added a container for image and status */}
         <img
-          src={restaurant.image}
-          alt={restaurant.name}
           className="restaurant-image"
+          src={`http://127.0.0.1:8000${restaurant.image}`}
+          alt={restaurant.name}
+          
         />
-        <span
-          className={`restaurant-status ${
-            restaurant.status === 'active' ? 'status-active' : 'status-pending'
-          }`}
-        >
-          {restaurant.status === 'active' ? 'Open' : 'Pending'}
-        </span>
+        
+       
       </div>
 
       <div className="restaurant-info">

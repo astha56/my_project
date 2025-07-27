@@ -32,7 +32,9 @@ const RegisterForm = () => {
       alert('Passwords do not match!');
       return;
     }
-
+    if (formData.password.length <6) {
+      alert ('Password must be at least 6 characters')
+    }
     const dataToSend = {
       username: formData.username,
       email: formData.email,

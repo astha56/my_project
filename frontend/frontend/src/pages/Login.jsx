@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext'; // ✅ import this
 import './LoginForm.css'; 
 
 function LoginForm() {
   const navigate = useNavigate();
+  const { login } = useAuth(); // ✅ get login function from context
+
   const [credentials, setCredentials] = useState({
     username: '',
     password: ''
@@ -36,6 +39,13 @@ function LoginForm() {
       if (response.ok) {
         localStorage.setItem('access', data.access);
         localStorage.setItem('refresh', data.refresh);
+
+        // ✅ Set the user in AuthContext (this updates the Header)
+        login({
+          name: credentials.username,
+          role: data.role || 'customer', // or fetch actual role if available
+        });
+
         alert('Welcome back, foodie! 🍟');
         navigate('/dashboard');
       } else {
@@ -47,7 +57,7 @@ function LoginForm() {
   };
 
   return (
-    <div className="auth-bg"> {/* ✅ Background image wrapper */}
+    <div className="auth-bg">
       <div className="form-container">
         <h2 className="form-title">🍟 Foodie Login</h2>
         <form onSubmit={handleSubmit}>

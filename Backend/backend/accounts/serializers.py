@@ -2,6 +2,9 @@ from rest_framework import serializers
 from .models import CustomUser
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
+from .models import Restaurant
+from .models import Restaurant, MenuItem
+from.models import Product, CartItem
 
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
@@ -26,3 +29,35 @@ class LoginSerializer(serializers.Serializer):
         if user and user.is_active:
             return user
         raise serializers.ValidationError("Invalid credentials")
+    
+class RestaurantSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Restaurant
+        fields = '__all__'
+
+class MenuItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MenuItem
+        fields = ['id', 'name', 'price', 'is_veg', 'description', 'image']
+
+class RestaurantSerializer(serializers.ModelSerializer):
+    menu_items = MenuItemSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Restaurant
+        fields = ['id', 'name', 'description', 'cuisine', 'location', 'rating', 'image', 'menu_items']
+        
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ['id', 'name', 'price', 'image']
+
+class CartItemSerializer(serializers.ModelSerializer):
+    product = ProductSerializer(read_only=True)
+    product_id = serializers.PrimaryKeyRelatedField(
+        queryset=Product.objects.all(), source='product', write_only=True
+    )
+
+    class Meta:
+        model = CartItem
+        fields = ['id', 'product', 'product_id', 'quantity']

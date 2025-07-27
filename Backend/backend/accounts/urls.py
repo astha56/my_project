@@ -2,7 +2,9 @@ from django.urls import path
 from django.contrib.auth import authenticate, login
 from .views import RegisterView, LoginView
 from django.http import JsonResponse
-
+from .views import RestaurantListAPI
+from .views import RestaurantDetailAPIView
+from .views import CartView
 import json
 
 def login_view(request):
@@ -31,4 +33,8 @@ def login_view(request):
 urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
     path('login/', LoginView.as_view(), name='login'),
+    path('restaurants/', RestaurantListAPI.as_view(), name='restaurant-list'),
+    path('restaurants/<int:pk>/', RestaurantDetailAPIView.as_view(), name='restaurant-detail'),
+    path('cart/', CartView.as_view(), name='cart'),
 ]
+
