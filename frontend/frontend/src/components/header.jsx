@@ -13,6 +13,7 @@ const Header = () => {
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen((prev) => !prev);
+    
   };
 
   const handleLogout = () => {

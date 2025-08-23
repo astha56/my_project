@@ -1,3 +1,6 @@
+from rest_framework.routers import DefaultRouter
+from .views import ReviewViewSet
+from django.urls import path, include
 from django.urls import path
 from django.contrib.auth import authenticate, login
 from .views import RegisterView, LoginView
@@ -6,6 +9,14 @@ from .views import RestaurantListAPI
 from .views import RestaurantDetailAPIView
 from .views import CartView
 import json
+from .views import OrderCreateView
+from .views import CustomerCheckoutView
+from .views import CustomerOrderListCreateView
+
+
+router = DefaultRouter()
+router.register(r'reviews', ReviewViewSet)
+
 
 def login_view(request):
     if request.method != 'POST':
@@ -36,5 +47,10 @@ urlpatterns = [
     path('restaurants/', RestaurantListAPI.as_view(), name='restaurant-list'),
     path('restaurants/<int:pk>/', RestaurantDetailAPIView.as_view(), name='restaurant-detail'),
     path('cart/', CartView.as_view(), name='cart'),
+    path('', include(router.urls)), 
+    path('orders/', OrderCreateView.as_view(), name='order-create'), 
+    path('customer-checkout/', CustomerCheckoutView.as_view(), name='customer-checkout'),
+    path('orders/new/', CustomerOrderListCreateView.as_view(), name='orders-list-create'),
 ]
+
 

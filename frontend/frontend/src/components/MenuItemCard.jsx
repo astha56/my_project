@@ -11,6 +11,8 @@ export function MenuItemCard({ item }) {
     addItem(item);
   };
 
+  
+
   return (
     <div className="menu-item-card">
       <div className="image-container">
@@ -37,13 +39,14 @@ export function MenuItemCard({ item }) {
             <span className="rating-value">{item.rating}</span>
             <span className="rating-count">({item.reviews})</span>
           </div>
-          <span className="price">${item.price}</span>
+          <span className="price">Nrs.{item.price}</span>
         </div>
 
         <button
           onClick={handleAddToCart}
           disabled={!item.isAvailable}
-          className={`add-to-cart-button ${item.isAvailable ? '' : 'disabled'}`}
+          className={`add-to-cart-button Nrs. {item.isAvailable ? '' : 'disabled'}`}
+          
         >
           <Plus className="icon" />
           <span>{item.isAvailable ? 'Add to Cart' : 'Unavailable'}</span>

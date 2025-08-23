@@ -11,6 +11,11 @@ import { CartProvider } from './context/CartContext';
 import { RestaurantsPage } from './pages/RestaurantsPage';
 import { RestaurantDetailPage } from './pages/RestaurantDetail';
 import { CartPage } from './pages/CartPage';
+import { CheckoutPage } from './pages/orders';
+
+/* Add Leaflet default styles */
+import 'leaflet/dist/leaflet.css';
+
 
 function App() {
   return (
@@ -27,6 +32,8 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/orders" element={<CheckoutPage />} />
+            
           </Routes>
         </BrowserRouter>
       </CartProvider>

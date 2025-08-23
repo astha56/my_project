@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; 
-import { Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext'; // ✅ import this
-import './LoginForm.css'; 
+import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import './LoginForm.css';
 
 function LoginForm() {
   const navigate = useNavigate();
-  const { login } = useAuth(); // ✅ get login function from context
+  const { login } = useAuth();
 
   const [credentials, setCredentials] = useState({
     username: '',
@@ -28,22 +27,23 @@ function LoginForm() {
     try {
       const response = await fetch('http://127.0.0.1:8000/api/login/', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(credentials)
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(credentials),
       });
 
       const data = await response.json();
 
       if (response.ok) {
+        // Save tokens in localStorage
         localStorage.setItem('access', data.access);
         localStorage.setItem('refresh', data.refresh);
 
-        // ✅ Set the user in AuthContext (this updates the Header)
+        // Save user info AND token in context
         login({
           name: credentials.username,
-          role: data.role || 'customer', // or fetch actual role if available
+          role: data.role || 'customer',
+          token: data.access,
+          refreshToken: data.refresh,
         });
 
         alert('Welcome back, foodie! 🍟');

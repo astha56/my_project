@@ -10,6 +10,19 @@ from rest_framework import generics
 from .models import CartItem, Product
 from .serializers import CartItemSerializer
 from rest_framework.permissions import AllowAny
+from rest_framework import viewsets
+from .serializers import ReviewSerializer
+from .models import Review
+from rest_framework import generics, permissions
+from django.views.decorators.csrf import csrf_exempt
+from .serializers import OrderSerializer
+from .models import Order
+from .models import CustomerOrder, MenuItem, CustomerOrderItem
+from .serializers import CustomerOrderSerializer
+
+@csrf_exempt
+def checkout_view(request):
+    ...
 
 class CartView(APIView):
     permission_classes = [AllowAny] 
@@ -83,7 +96,118 @@ class CartView(APIView):
         except CartItem.DoesNotExist:
             return Response({'error': 'Cart item not found'}, status=status.HTTP_404_NOT_FOUND)
         
+class ReviewViewSet(viewsets.ModelViewSet):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
 
 
+    
+class OrderCreateView(APIView):
+    def get(self, request):
+        # For example: return all orders (or a message)
+        orders = Order.objects.all()
+        serializer = OrderSerializer(orders, many=True)
+        return Response(serializer.data)
 
+    def post(self, request):
+        serializer = OrderSerializer(data=request.data)
+        if serializer.is_valid():
+            order = serializer.save()
+            return Response({'message': 'Order saved successfully', 'order_id': order.id}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 # Create your views here.
+
+from .serializers import CustomerOrderSerializer
+
+# List all orders or create a new order
+class CustomerOrderListCreateView(generics.ListCreateAPIView):
+    queryset = CustomerOrder.objects.all()
+    serializer_class = CustomerOrderSerializer
+
+
+class CustomerCheckoutView(APIView):
+    permission_classes = [AllowAny]  # no auth required
+
+    def post(self, request):
+        data = request.data
+        full_name = data.get('full_name')
+        delivery_address = data.get('delivery_address')
+        phone_number = data.get('phone_number')
+        latitude = data.get('latitude')
+        longitude = data.get('longitude')
+        items = data.get('items', [])
+
+        if not items:
+            return Response({"error": "No items provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # get total_cost from frontend (includes delivery + tax)
+        total_cost = data.get('total_cost')
+        if total_cost is None:
+            total_cost = sum(item['quantity'] * item['price'] for item in items)
+
+        order = CustomerOrder.objects.create(
+            full_name=full_name,
+            delivery_address=delivery_address,
+            phone_number=phone_number,
+            latitude=latitude,
+            longitude=longitude,
+            total_cost=total_cost,
+            user=None  # or request.user if logged in
+        )
+
+        for item in items:
+            menu_item = MenuItem.objects.get(id=item['product_id'])
+            CustomerOrderItem.objects.create(
+                order=order,
+                menu_item=menu_item,
+                quantity=item['quantity'],
+                price=item['price']
+            )
+
+        return Response({
+            "message": "Order placed successfully",
+            "order_id": order.id,
+            "total_cost": order.total_cost
+        }, status=status.HTTP_201_CREATED)
+
+    
+# class CustomerCheckoutView(APIView):
+#     permission_classes = [AllowAny]  # no auth required
+
+#     def post(self, request):
+#         data = request.data
+#         full_name = data.get('full_name')
+#         delivery_address = data.get('delivery_address')
+#         phone_number = data.get('phone_number')
+#         latitude = data.get('latitude')
+#         longitude = data.get('longitude')
+#         items = data.get('items', [])
+
+#         if not items:
+#             return Response({"error": "No items provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+#         total_cost = sum(item['quantity'] * item['price'] for item in items)
+
+#         order = CustomerOrder.objects.create(
+#             full_name=full_name,
+#             delivery_address=delivery_address,
+#             phone_number=phone_number,
+#             latitude=latitude,
+#             longitude=longitude,
+#             total_cost=total_cost,
+#             user=None  # or request.user if logged in
+#         )
+
+#         for item in items:
+#             menu_item = MenuItem.objects.get(id=item['menu_item'])
+#             CustomerOrderItem.objects.create(
+#                 order=order,
+#                 menu_item=menu_item,
+#                 quantity=item['quantity'],
+#                 price=item['price']
+#             )
+
+#         return Response({"message": "Order placed successfully"}, status=status.HTTP_201_CREATED)
+    
+    
+    

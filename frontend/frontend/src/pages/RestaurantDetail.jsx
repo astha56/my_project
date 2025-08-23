@@ -2,32 +2,46 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { CheckCircle } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import './RestaurantDetail.css';
 
 export function RestaurantDetailPage() {
   const { id } = useParams();
   const { addItem } = useCart();
+  const { user } = useAuth();
+
   const [restaurant, setRestaurant] = useState(null);
+  const [reviews, setReviews] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [dietFilter, setDietFilter] = useState('all');
   const [loading, setLoading] = useState(true);
+  const [newReview, setNewReview] = useState('');
+  const [newRating, setNewRating] = useState(5);
+  const [error, setError] = useState('');
 
+  // Fetch restaurant and reviews on load
   useEffect(() => {
-    const fetchRestaurant = async () => {
+    async function fetchData() {
       try {
-        const response = await fetch(`http://localhost:8000/api/restaurants/${id}/`);
-        const data = await response.json();
+        const res = await fetch(`http://localhost:8000/api/restaurants/${id}/`);
+        const data = await res.json();
         setRestaurant(data);
+        
+        // Fetch reviews for this restaurant separately from /api/reviews?restaurant=<id>
+        const reviewsRes = await fetch(`http://localhost:8000/api/reviews/?restaurant=${id}`);
+        const reviewsData = await reviewsRes.json();
+        setReviews(reviewsData);
+
         setLoading(false);
-      } catch (error) {
-        console.error("Failed to fetch restaurant:", error);
+      } catch (err) {
+        console.error(err);
         setLoading(false);
       }
-    };
-
-    fetchRestaurant();
+    }
+    fetchData();
   }, [id]);
 
+  // Filter menu items based on search and diet filter
   const filteredMenuItems = useMemo(() => {
     if (!restaurant) return [];
     return restaurant.menu_items.filter(item => {
@@ -40,25 +54,67 @@ export function RestaurantDetailPage() {
     });
   }, [searchTerm, dietFilter, restaurant]);
 
+  // Submit new review to backend
+  const handleReviewSubmit = async () => {
+    if (!newReview.trim()) {
+      setError('Please enter your review.');
+      return;
+    }
+    setError('');
+
+    if (!user) {
+      setError('You must be logged in to submit a review.');
+      return;
+    }
+
+    const reviewPayload = {
+      restaurant: id,
+      customer_name: user.name,
+      text: newReview,
+      rating: newRating,
+    };
+
+    try {
+      const res = await fetch('http://localhost:8000/api/reviews/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          // Add auth token here if your API requires it, e.g. Authorization: Bearer <token>
+        },
+        body: JSON.stringify(reviewPayload),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.detail || 'Failed to submit review');
+      }
+
+      const savedReview = await res.json();
+
+      // Add newly saved review to the top of the list
+      setReviews(prev => [savedReview, ...prev]);
+      setNewReview('');
+      setNewRating(5);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
   if (loading) return <p>Loading...</p>;
   if (!restaurant) return <p>Restaurant not found.</p>;
 
   return (
     <div className="restaurant-page">
       <div className="restaurant-header">
-        <img
-          src={restaurant.image}
-          alt={restaurant.name}
-          className="restaurant-header-img"
-        />
+        <img src={restaurant.image} alt={restaurant.name} className="restaurant-header-img" />
         <div className="restaurant-header-overlay">
           <h1 className="restaurant-title">{restaurant.name}</h1>
           <p>{restaurant.description}</p>
           <div className="restaurant-meta">
             <span>⭐ {restaurant.rating || '4.3'}</span>
             <span>🕒 30-40 min</span>
-            <span>📍 {restaurant.location || '456 Curry Lane, City'}</span>
-            <span>📞 {restaurant.phone || '+1-234-567-8901'}</span>
+            <span>📍 {restaurant.location || 'Banehswor, Kathmandu'}</span>
+            <span>📞 {restaurant.phone || '9845312790'}</span>
           </div>
         </div>
       </div>
@@ -102,13 +158,41 @@ export function RestaurantDetailPage() {
               />
               <h3 className="menu-card-title">{item.name}</h3>
               <p>{item.description}</p>
-              <p className="menu-card-price">${parseFloat(item.price).toFixed(2)}</p>
-              <button
-                className="add-to-cart-btn"
-                onClick={() => addItem(item)}
-              >
+              <p className="menu-card-price">Nrs. {parseFloat(item.price).toFixed(2)}</p>
+              <button className="add-to-cart-btn" onClick={() => addItem(item)}>
                 Add to Cart
               </button>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="review-section">
+        <h2>Customer Reviews</h2>
+
+        <div className="review-form">
+          <textarea
+            placeholder="Write your review..."
+            value={newReview}
+            onChange={e => setNewReview(e.target.value)}
+          />
+          <select value={newRating} onChange={e => setNewRating(Number(e.target.value))}>
+            {[5, 4, 3, 2, 1].map(n => (
+              <option key={n} value={n}>{n} Star</option>
+            ))}
+          </select>
+          <button onClick={handleReviewSubmit}>Submit Review</button>
+          {error && <p className="error-message">{error}</p>}
+        </div>
+
+        <div className="review-list">
+          {reviews.length === 0 && <p>No reviews yet.</p>}
+          {reviews.map((rev, index) => (
+            <div key={index} className="review-card">
+              <p className="review-rating">⭐ {rev.rating}</p>
+              <p className="review-text">"{rev.text}"</p>
+              <p className="review-name">- {rev.customer_name || "Anonymous"}</p>
+              <p className="review-date">{rev.date}</p>
             </div>
           ))}
         </div>
