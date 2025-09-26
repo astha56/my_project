@@ -79,8 +79,17 @@ class CustomerOrder(models.Model):
     delivery_address = models.TextField()
     latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
-    total_cost = models.DecimalField(max_digits=10, decimal_places=2)  # comes from linked Order
+    total_cost = models.DecimalField(max_digits=10, decimal_places=2)  
     order_date = models.DateTimeField(auto_now_add=True)
+    payment_status = models.CharField(
+        max_length=20,
+        choices=[("pending", "Pending"), ("paid", "Paid"), ("failed", "Failed")],
+        default="pending"
+    )
+    stripe_payment_intent_id = models.CharField(max_length=255, null=True, blank=True)
+
+    def __str__(self):
+        return f"CustomerOrder {self.id} - {self.payment_status}"
 
     def __str__(self):
         return f"CustomerOrder {self.id} (linked to Order {self.order.id})"

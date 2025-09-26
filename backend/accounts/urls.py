@@ -12,6 +12,7 @@ import json
 from .views import OrderCreateView
 from .views import CustomerCheckoutView
 from .views import CustomerOrderListCreateView
+from . import views
 
 
 router = DefaultRouter()
@@ -51,6 +52,8 @@ urlpatterns = [
     path('orders/', OrderCreateView.as_view(), name='order-create'), 
     path('customer-checkout/', CustomerCheckoutView.as_view(), name='customer-checkout'),
     path('orders/new/', CustomerOrderListCreateView.as_view(), name='orders-list-create'),
+    path("create-payment-intent/", views.create_payment_intent, name="create-payment-intent"),
+    path('api/stripe-webhook/', views.stripe_webhook, name='stripe-webhook'),
 ]
 
 

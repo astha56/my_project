@@ -19,6 +19,11 @@ from .serializers import OrderSerializer
 from .models import Order
 from .models import CustomerOrder, MenuItem, CustomerOrderItem
 from .serializers import CustomerOrderSerializer
+import stripe
+from django.conf import settings
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
 
 @csrf_exempt
 def checkout_view(request):
@@ -87,7 +92,7 @@ class CartView(APIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED if created else status.HTTP_200_OK)
 
     def delete(self, request):
-        # Remove item from cart
+       
         product_id = request.data.get('product_id')
         try:
             cart_item = CartItem.objects.get(user=request.user, product_id=product_id)
@@ -170,7 +175,76 @@ class CustomerCheckoutView(APIView):
             "total_cost": order.total_cost
         }, status=status.HTTP_201_CREATED)
 
+  
+stripe.api_key = settings.STRIPE_SECRET_KEY
+
+@csrf_exempt
+def create_payment_intent(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            amount = int(float(data["amount"]))
+            intent = stripe.PaymentIntent.create(
+                amount=amount,
+                currency="npr",
+                automatic_payment_methods={"enabled": True},
+            )
+            return JsonResponse({"clientSecret": intent.client_secret})
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
+    else:
+        # Handle GET or other methods
+        return JsonResponse({"error": "POST method required"}, status=405)
     
+@csrf_exempt
+def confirm_order(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            order_id = data.get("orderId")
+            payment_intent_id = data.get("paymentIntentId")
+
+            order = CustomerOrder.objects.get(id=order_id)
+            order.payment_status = "paid"
+            order.stripe_payment_intent_id = payment_intent_id
+            order.save()
+
+            return JsonResponse({"status": "success"})
+        except Exception as e:
+            return JsonResponse({"status": "error", "message": str(e)}, status=400)
+    else:
+        return JsonResponse({"error": "POST method required"}, status=405)
+    
+@csrf_exempt
+def stripe_webhook(request):
+    import stripe
+    from django.http import HttpResponse
+    from .models import CustomerOrder
+
+    stripe.api_key = "YOUR_STRIPE_SECRET_KEY"
+    payload = request.body
+    sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
+    endpoint_secret = "YOUR_STRIPE_ENDPOINT_SECRET"
+
+    try:
+        event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
+    except Exception:
+        return HttpResponse(status=400)
+
+    if event['type'] == 'payment_intent.succeeded':
+        payment_intent = event['data']['object']
+        stripe_id = payment_intent['id']
+
+        try:
+            order = CustomerOrder.objects.get(stripe_payment_intent_id=stripe_id)
+            order.payment_status = 'paid'
+            order.save()
+        except CustomerOrder.DoesNotExist:
+            pass  # Order not found, maybe log it
+
+    return HttpResponse(status=200)
+
+          
 # class CustomerCheckoutView(APIView):
 #     permission_classes = [AllowAny]  # no auth required
 
