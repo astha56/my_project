@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ShoppingCart, LogOut, User } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { useCart } from '../context/CartContext';  // import context
+import { useCart } from '../context/CartContext';  
 import './header.css';
 
 const Header = () => {
@@ -36,12 +36,13 @@ const Header = () => {
                 <>
                   <Link to="/restaurants" className="nav-link">Restaurants</Link>
                   <Link to="/orders" className="nav-link">My Orders</Link>
+                  <Link to= "/notification" className= "nav-link">Notification </Link>
                   <Link to="/cart" className="cart-link">
                     <ShoppingCart />
                     {cartCount > 0 && (
                       <span className="cart-badge">{cartCount}</span>
                     )}
-                  </Link>
+                  </Link> 
                 </>
               )}
 

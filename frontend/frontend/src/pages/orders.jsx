@@ -86,16 +86,9 @@ export function CheckoutPage() {
 
       console.log('Order submitted:', data);
 
-      // Save order & prepare Khalti payment
-      localStorage.setItem('orderDetails', JSON.stringify(data));
-      const khaltiPayment = {
-        product_identity: data.order_id || data.id,
-        product_name: `Order #${data.order_id || data.id}`,
-        amount: Math.round(fullTotal * 100), // amount in paisa
-      };
-      localStorage.setItem('khaltiPayment', JSON.stringify(khaltiPayment));
 
-      navigate('/khalti-payment');
+      localStorage.setItem('orderDetails', JSON.stringify(data));
+      navigate('/Payment');  // 👉 change this to the page you want
 
     } catch (err) {
       console.error(err);
@@ -160,7 +153,7 @@ export function CheckoutPage() {
 
         <div className="button-center">
           <button type="submit" disabled={loading}>
-            {loading ? 'Submitting...' : 'Continue to Payment'}
+            {loading ? 'Submitting...' : 'Continue to payment'}
           </button>
         </div>
       </form>
