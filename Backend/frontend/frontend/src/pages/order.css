@@ -1,0 +1,91 @@
+.checkout-container {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #fefefe;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.1);
+}
+
+.checkout-title {
+  font-size: 28px;
+  font-weight: 700;
+  color:#eb770b;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.checkout-form-layout {
+  display: flex;
+  gap: 50px;
+  flex-wrap: wrap;
+  position: relative;
+}
+
+.form-left {
+  flex: 1 1 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.form-left label {
+  font-weight: 600;
+  font-size: 15px;
+  color: #080808;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-left input,
+.form-left textarea {
+  padding: 10px 14px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #7e4f23;
+  resize: vertical;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.map-right {
+  flex: 1 1 450px;
+}
+
+.map-right h3 {
+  margin-bottom: 12px;
+  color: #5025e9;
+  font-weight: 600;
+}
+
+.location-info {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #0beb70;
+}
+
+.button-center {
+  flex-basis: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.button-center button {
+  background-color:#eb770b;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 14px 28px;
+  font-size: 17px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.button-center button:disabled {
+  background-color:#eb770b;
+  cursor: not-allowed;
+}
