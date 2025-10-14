@@ -41,7 +41,7 @@ function LoginForm() {
         // Save user info AND token in context
         login({
           name: credentials.username,
-          role: data.role || 'customer',
+          role: data.role || 'customer' ,
           token: data.access,
           refreshToken: data.refresh,
         });

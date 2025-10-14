@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './RegistrationForm.css'; // ✅ Includes background + styling
+import './RegistrationForm.css';
 
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
@@ -7,10 +7,19 @@ const RegisterForm = () => {
     email: '',
     password: '',
     retypePassword: '',
+    role: 'customer', // default role
     terms: false,
   });
 
   const [message, setMessage] = useState('');
+
+  // Define all available roles here
+  const roles = [
+    { value: 'customer', label: 'Customer' },
+    { value: 'restaurant_owner', label: 'Restaurant Owner' },
+    { value: 'admin', label: 'Admin' },
+    
+  ];
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -32,13 +41,17 @@ const RegisterForm = () => {
       alert('Passwords do not match!');
       return;
     }
-    if (formData.password.length <6) {
-      alert ('Password must be at least 6 characters')
+
+    if (formData.password.length < 6) {
+      alert('Password must be at least 6 characters');
+      return;
     }
+
     const dataToSend = {
       username: formData.username,
       email: formData.email,
       password: formData.password,
+      role: formData.role,
     };
 
     fetch('http://127.0.0.1:8000/api/register/', {
@@ -55,7 +68,7 @@ const RegisterForm = () => {
   };
 
   return (
-    <div className="auth-bg"> {/* ✅ Background image wrapper */}
+    <div className="auth-bg">
       <div className="register-container">
         <form className="register-form" onSubmit={handleSubmit}>
           <h2 className="form-title">🍕 Foodie Sign Up</h2>
@@ -99,6 +112,16 @@ const RegisterForm = () => {
             onChange={handleChange}
             required
           />
+
+          {/* ✅ Dynamic Role Selection */}
+          <label>Register as:</label>
+          <select name="role" value={formData.role} onChange={handleChange}>
+            {roles.map((r) => (
+              <option key={r.value} value={r.value}>
+                {r.label}
+              </option>
+            ))}
+          </select>
 
           <label className="terms-row">
             <input
