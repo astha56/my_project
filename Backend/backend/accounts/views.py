@@ -57,7 +57,7 @@ class LoginView(APIView):
         serializer = LoginSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.validated_data
-            return Response({"message": "Login successful", "username": user.username}, status=status.HTTP_200_OK)
+            return Response({"message": "Login successful", "username": user.username, "role": user.role }, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class RestaurantDetailAPIView(generics.RetrieveAPIView):
@@ -244,6 +244,16 @@ def stripe_webhook(request):
 
     return HttpResponse(status=200)
 
+def confirm_order(request, order_id):
+    # Your order confirmation logic
+    order = Order.objects.get(id=order_id, user=request.user)
+    order.status = "confirmed"
+    order.save()
+
+    return JsonResponse({
+        "message": "Order confirmed",
+        "notification": "Your order has been confirmed!"
+    })
           
 # class CustomerCheckoutView(APIView):
 #     permission_classes = [AllowAny]  # no auth required
