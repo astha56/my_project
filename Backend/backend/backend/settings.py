@@ -12,11 +12,6 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
-from dotenv import load_dotenv
-
-
-
-
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -168,6 +163,6 @@ APPEND_SLASH = True
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-load_dotenv()
-STRIPE_SECRET_KEY =  os.getenv("STRIPE_SECRET_KEY")
+
+STRIPE_SECRET_KEY =  os.getenv("STRIPE_SECRET_KEY", "sk_test_51RyrJh3BS8BoCmLZUhMaHzFVHcxzs4E08ZB5yFXuac8rQKq4AOePxjm2JSk1XrasJL5uzjRyCjwADplMh9nwlZli00WVKR478l")
 STRIPE_PUBLISHED_KEY = os.getenv ("STRIPE_PUBLISHED_KEY", "pk_test_51RyrJh3BS8BoCmLZ7iOr6wroTJlquReEKwBnDC6wq8tHIkQC1XrLukoHdouYP2anMsS1mhLcFghXqMHPq8FkdUvx00VC2S41Ds")

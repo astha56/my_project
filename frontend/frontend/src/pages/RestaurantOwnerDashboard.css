@@ -1,0 +1,40 @@
+.dashboard-container { font-family: 'Poppins', sans-serif; background:#f8f8f8; padding:20px; }
+
+/* Hero Section */
+.hero-section { display:flex; gap:20px; background:#fff; padding:20px; border-radius:15px; box-shadow:0 5px 15px rgba(0,0,0,0.1); margin-bottom:30px; }
+.hero-image { width:300px; height:200px; object-fit:cover; border-radius:10px; }
+.hero-text h1 { margin:0; font-size:2rem; color:#333; }
+.stats { display:flex; gap:15px; margin-top:15px; }
+.stat { background:#f0f0f0; padding:10px 15px; border-radius:10px; text-align:center; }
+.stat h3 { margin:0; color:#444; }
+.stat p { margin:0; color:#777; font-size:0.85rem; }
+
+/* Section headers */
+.menu-section h2, .orders-section h2, .reviews-section h2, .about-section h2 { margin-bottom:15px; color:#333; border-bottom:2px solid #eee; padding-bottom:5px; }
+
+/* Cards layout */
+.menu-cards, .orders-cards, .reviews-cards { display:flex; flex-wrap:wrap; gap:20px; }
+.menu-card, .order-card, .review-card { background:#fff; padding:15px; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1); width:250px; transition:transform 0.2s; }
+.menu-card:hover, .order-card:hover, .review-card:hover { transform:translateY(-5px); }
+
+/* Menu Cards */
+.menu-card img { width:100%; height:150px; object-fit:cover; border-radius:8px; margin-bottom:10px; }
+.menu-price { font-weight:bold; color:#5cb85c; }
+
+/* Orders Cards */
+.order-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+.badge.pending { background:#f0ad4e; color:#fff; padding:5px 10px; border-radius:5px; }
+.badge.accepted { background:#5cb85c; color:#fff; padding:5px 10px; border-radius:5px; }
+.badge.rejected { background:#d9534f; color:#fff; padding:5px 10px; border-radius:5px; }
+
+.order-actions { margin-top:10px; display:flex; gap:10px; }
+.btn-accept { background:#5cb85c; color:#fff; border:none; padding:5px 10px; border-radius:5px; cursor:pointer; }
+.btn-reject { background:#d9534f; color:#fff; border:none; padding:5px 10px; border-radius:5px; cursor:pointer; }
+
+/* Reviews Cards */
+.review-user { font-weight:bold; margin-bottom:5px; }
+.review-comment { font-style:italic; color:#555; }
+.review-rating { color:#f39c12; margin-bottom:5px; }
+
+/* About Us Section */
+.about-section p { background:#fff; padding:15px; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1); }

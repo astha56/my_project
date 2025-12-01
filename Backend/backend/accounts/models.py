@@ -24,7 +24,6 @@ class CartItem(models.Model):
         unique_together = ('user', 'product')
         
 class CustomUser(AbstractUser):
-    # Add custom fields here if needed\
     ROLE_CHOICES = [
         ('customer', 'Customer'),
         ('restaurant_owner', 'Restaurant Owner'),

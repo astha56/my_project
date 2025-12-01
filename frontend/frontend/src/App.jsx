@@ -13,6 +13,10 @@ import { RestaurantDetailPage } from './pages/RestaurantDetail';
 import { CartPage } from './pages/CartPage';
 import { CheckoutPage } from './pages/orders';
 import PaymentPage from "./pages/Payment";
+import LoginForm from './pages/Login';
+// import CustomerDashboard from './pages/CustomerDashboard';
+import RestaurantDashboard from './pages/RestaurantDashboard';
+import AdminDashboard from './pages/AdminDashboard';
 
 /* Add Leaflet default styles */
 import 'leaflet/dist/leaflet.css';
@@ -35,6 +39,10 @@ function App() {
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/orders" element={<CheckoutPage />} />
             <Route path="/payment" element={<PaymentPage />} />
+            <Route path="/login" element={<LoginForm />} />
+            {/* <Route path="/customer-dashboard" element={<CustomerDashboard />} /> */}
+            <Route path="/restaurant-dashboard" element={<RestaurantDashboard />} />
+            <Route path="/admin-dashboard" element={<AdminDashboard />} />
           
           </Routes>
         </BrowserRouter>

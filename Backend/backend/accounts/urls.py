@@ -54,6 +54,9 @@ urlpatterns = [
     path('orders/new/', CustomerOrderListCreateView.as_view(), name='orders-list-create'),
     path("create-payment-intent/", views.create_payment_intent, name="create-payment-intent"),
     path('api/stripe-webhook/', views.stripe_webhook, name='stripe-webhook'),
+     path('api/customers/', views.customers_list, name='customers-list'),
+     path('restaurant/<int:restaurant_id>/orders/', views.restaurant_orders, name='restaurant-orders'),
+    path('restaurant/<int:restaurant_id>/reviews/', views.restaurant_reviews, name='restaurant-reviews'),
 ]
 
 

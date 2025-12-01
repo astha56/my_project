@@ -24,6 +24,53 @@ from django.conf import settings
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
+from rest_framework.decorators import api_view
+from accounts.models import CustomUser
+from .serializers import RegisterSerializer
+from .serializers import CustomerOrderItemSerializer
+
+@api_view(['GET'])
+def restaurant_orders(request, restaurant_id):
+    try:
+        # Check that the restaurant exists
+        restaurant = Restaurant.objects.get(id=restaurant_id)
+
+        # Get all CustomerOrderItems where the menu_item belongs to this restaurant
+        orders = CustomerOrderItem.objects.filter(menu_item__restaurant=restaurant)
+
+        serializer = CustomerOrderItemSerializer(orders, many=True)
+        return Response(serializer.data)
+
+    except Restaurant.DoesNotExist:
+        return Response({"error": "Restaurant not found"}, status=404)
+    
+@api_view(['GET'])
+def restaurant_reviews(request, restaurant_id):
+    try:
+        restaurant = Restaurant.objects.get(id=restaurant_id)
+        reviews = Review.objects.filter(restaurant=restaurant)
+        serializer = ReviewSerializer(reviews, many=True)
+        return Response(serializer.data)
+    except Restaurant.DoesNotExist:
+        return Response({"error": "Restaurant not found"}, status=404)
+
+
+# Accept or reject order
+@api_view(['POST'])
+def order_action(request, order_id, action):
+    order = CustomerOrder.objects.get(id=order_id)
+    if action in ['accepted', 'rejected']:
+        order.status = action
+        order.save()
+    serializer = CustomerOrderSerializer(order)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+def customers_list(request):
+    users = CustomUser.objects.all()
+    serializer = RegisterSerializer(users, many=True)
+    return Response(serializer.data)
 
 @csrf_exempt
 def checkout_view(request):
@@ -42,12 +89,12 @@ class RestaurantListAPI(APIView):
 
 class RegisterView(APIView):
     def post(self, request):
-        print("Received data:", request.data)               # Show received payload
+        print("Received data:", request.data)               
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response({'message': 'Registered successfully'}, status=201)
-        print("Errors:", serializer.errors)                 # Show validation errors
+        print("Errors:", serializer.errors)                 
         return Response(serializer.errors, status=400)
     
 

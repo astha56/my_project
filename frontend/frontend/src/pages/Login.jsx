@@ -34,24 +34,36 @@ function LoginForm() {
       const data = await response.json();
 
       if (response.ok) {
+        // Extract role from response (make sure backend returns it)
+        const userRole = data.user?.role || data.role || 'customer';
+
         // Save tokens in localStorage
         localStorage.setItem('access', data.access);
         localStorage.setItem('refresh', data.refresh);
 
-        // Save user info AND token in context
+        // Save user info in auth context
         login({
           name: credentials.username,
-          role: data.role || 'customer' ,
+          role: userRole,
           token: data.access,
           refreshToken: data.refresh,
         });
 
-        alert('Welcome back, foodie! 🍟');
-        navigate('/dashboard');
+        alert(`Welcome back, ${credentials.username}! 🍟`);
+
+        // Redirect based on role
+        if (userRole === 'customer') {
+          navigate('/dashboard');
+        } else if (userRole === 'restaurant_owner') {
+          navigate('/restaurant-dashboard');
+        } else if (userRole === 'admin') {
+          navigate('/admin-dashboard');
+        } 
       } else {
         setError(data.detail || 'Login failed. Check your credentials.');
       }
     } catch (err) {
+      console.error('Login error:', err);
       setError('Network error. Please try again later.');
     }
   };
