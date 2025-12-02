@@ -3,6 +3,7 @@ from django.db import models
 from django.conf import settings 
 
 
+    
 class Product(models.Model):
     name = models.CharField(max_length=200)
     price = models.DecimalField(max_digits=8, decimal_places=2)
@@ -23,8 +24,19 @@ class CartItem(models.Model):
         unique_together = ('user', 'product')
         
 class CustomUser(AbstractUser):
-    # Add custom fields here if needed
+    ROLE_CHOICES = [
+        ('customer', 'Customer'),
+        ('restaurant_owner', 'Restaurant Owner'),
+        ('admin', 'Admin'),
+    
+    ]
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='customer')
     pass
+
+    def __str__(self):
+        return f"{self.username} ({self.role})"
+    
+    
 class Restaurant(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()  # <-- new field added
