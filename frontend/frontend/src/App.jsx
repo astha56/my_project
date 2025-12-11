@@ -5,7 +5,7 @@ import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import Login from './pages/Login';
 import Dashboard from './pages/dashboard';
-import Header from './components/Header';
+import Header from './components/header';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { RestaurantsPage } from './pages/RestaurantsPage';
