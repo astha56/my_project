@@ -2,21 +2,27 @@
   font-family: 'Segoe UI', sans-serif;
   background-color: #f7fafc;
   color: #333;
+  height: 100%;
+  background-image: url('/public/bac.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 /* Hero Section */
-.hero-section {
+
+.hero {
   padding: 4rem 2rem;
   text-align: center;
   background-color: #e0ad05;
-  background-image: url('/public/b.jpg');
-  height: 100%;
+  background-image: url('/public/Background.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   opacity: 90%; 
-
+   height: 100%;
 }
+
 .hero-content h1 {
   font-size: 3rem;
   font-weight: 200;

@@ -5,6 +5,7 @@ import '../pages/Dashboard.css';
 import { useAuth } from '../context/AuthContext';
 import { RestaurantCard } from '../components/RestaurantCard';
 
+
 export default function HomePage() {
   const { user } = useAuth();
 
@@ -33,7 +34,7 @@ export default function HomePage() {
     <>
       <div className="home-container">
         {/* Hero Section */}
-        <section className="hero-section">
+        <section className="hero">
           <div className="hero-content">
             <h1>Connecting You with Local Flavors</h1>
             <p>Discover amazing restaurants in your neighborhood</p>
