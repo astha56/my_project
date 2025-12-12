@@ -1,8 +1,10 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.conf import settings 
+import random 
 
-
+def generate_fake_payment_intent_id():
+    return f"pi_{random.randint(1000,9999999)}"
     
 class Product(models.Model):
     name = models.CharField(max_length=200)
@@ -14,7 +16,7 @@ class CartItem(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name='cart_items',
-        null=True,      # Allow NULL temporarily
+        null=True,      
         blank=True
     )
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
@@ -39,7 +41,7 @@ class CustomUser(AbstractUser):
     
 class Restaurant(models.Model):
     name = models.CharField(max_length=100)
-    description = models.TextField()  # <-- new field added
+    description = models.TextField()  
     cuisine = models.CharField(max_length=50)
     location = models.CharField(max_length=100)
     rating = models.DecimalField(max_digits=3, decimal_places=1)
@@ -96,9 +98,15 @@ class CustomerOrder(models.Model):
     payment_status = models.CharField(
         max_length=20,
         choices=[("pending", "Pending"), ("paid", "Paid"), ("failed", "Failed")],
-        default="pending"
+        default="paid"
     )
-    stripe_payment_intent_id = models.CharField(max_length=255, null=True, blank=True)
+    stripe_payment_intent_id = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True,
+        default=generate_fake_payment_intent_id  # auto-generate random ID
+    )
+    
 
     def __str__(self):
         return f"CustomerOrder {self.id} - {self.payment_status}"
